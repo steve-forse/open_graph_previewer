@@ -31,6 +31,40 @@ RSpec.describe "Api::V1::OpenGraphPreviews" do
     end
   end
 
+  describe "DELETE /api/v1/open_graph_previews/:id" do
+    before { allow(ActionCable.server).to receive(:broadcast) }
+
+    context "when the preview exists" do
+      it "destroys the preview and returns 204" do
+        preview = create(:open_graph_preview)
+
+        expect {
+          delete "/api/v1/open_graph_previews/#{preview.id}", as: :json
+        }.to change(OpenGraphPreview, :count).by(-1)
+
+        expect(response).to have_http_status(:no_content)
+      end
+
+      it "broadcasts a delete message" do
+        preview = create(:open_graph_preview)
+        delete "/api/v1/open_graph_previews/#{preview.id}", as: :json
+
+        expect(ActionCable.server).to have_received(:broadcast).with(
+          "open_graph_previews",
+          hash_including(type: "delete", id: preview.id)
+        )
+      end
+    end
+
+    context "when the preview does not exist" do
+      it "returns 404" do
+        delete "/api/v1/open_graph_previews/0", as: :json
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
   describe "GET /api/v1/open_graph_previews" do
     it "returns all previews ordered newest-first" do
       old = create(:open_graph_preview, created_at: 2.days.ago)

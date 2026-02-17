@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :open_graph_previews, only: %i[index create]
+      resources :open_graph_previews, only: %i[index create destroy]
     end
   end
 

@@ -1,6 +1,8 @@
 module Api
   module V1
     class OpenGraphPreviewsController < ApplicationController
+      include BroadcastablePreview
+
       skip_forgery_protection
 
       def index
@@ -20,6 +22,21 @@ module Api
         end
       end
 
+      def destroy
+        preview = OpenGraphPreview.find_by(id: params[:id])
+
+        unless preview
+          render json: { error: "Not found" }, status: :not_found
+          return
+        end
+
+        id = preview.id
+        preview.destroy!
+        broadcast_preview_delete(id)
+
+        head :no_content
+      end
+
       private
 
       def serialize_preview(preview)
@@ -30,6 +47,7 @@ module Api
           og_image_url: preview.og_image_url,
           og_data: preview.og_data,
           error_message: preview.error_message,
+          retry_count: preview.retry_count,
           created_at: preview.created_at
         }
       end
