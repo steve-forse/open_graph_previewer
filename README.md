@@ -17,9 +17,9 @@ Controllers → Jobs → Interactions (service objects) → Models
 
 ### Key Design Decisions
 
-**Polling vs WebSockets**: We use 3-second polling from the React frontend. This is simpler to implement and debug than WebSockets/ActionCable, and acceptable for this use case where near-real-time updates are sufficient. WebSockets would be preferable at scale.
+**ActionCable WebSockets**: The React frontend subscribes to an `OpenGraphPreviewsChannel` via ActionCable for real-time updates. When a background job finishes fetching OG data, the result is broadcast to all connected clients immediately.
 
-**solid_queue**: Included in Rails 8 by default. No need for Redis or external dependencies — it uses the SQLite database directly. Perfect for this application's scope.
+**solid_queue + solid_cable**: Both are included in Rails 8 by default. No need for Redis or external dependencies — they use the SQLite database directly. Perfect for this application's scope.
 
 **ActiveInteraction**: Provides a clean service object pattern with typed inputs, composability, and built-in error handling. Keeps controllers and models thin per SOLID principles.
 
@@ -36,8 +36,10 @@ Controllers → Jobs → Interactions (service objects) → Models
 ### Frontend
 - Vite + vite-ruby with HMR
 - React 18 with TypeScript
-- Mantine UI component library
+- Mantine UI component library (dark theme)
+- Tabler Icons
 - Axios for API calls
+- ActionCable for real-time WebSocket updates
 
 ## Setup
 
@@ -66,7 +68,11 @@ The app will be available at http://localhost:3000
 ## Running Tests
 
 ```bash
+# Backend
 bundle exec rspec
+
+# Frontend
+npm run test:run
 ```
 
 ## Security Scan
@@ -84,13 +90,12 @@ bundle exec rubocop
 ## Development Notes
 
 - AI was used to scaffold and assist development of this application
-- The polling interval is set to 3 seconds — adjust in `useOpenGraphPreviews.ts`
+- Real-time updates are delivered via ActionCable — see `useOpenGraphPreviews.ts`
 - The HTTP fetcher uses a 10-second timeout and realistic User-Agent header
 - All OG tag extraction is case-insensitive on the property attribute
 
 ## Known Limitations
 
-- **Polling instead of WebSockets**: Not ideal for high-traffic production use
 - **No rate limiting**: URL submissions are not rate-limited
 - **No authentication**: The app is open to all users
 - **No pagination**: All previews are loaded at once; would need pagination at scale
