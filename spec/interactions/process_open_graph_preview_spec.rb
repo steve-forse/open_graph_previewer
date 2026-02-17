@@ -18,6 +18,10 @@ RSpec.describe ProcessOpenGraphPreview do
     HTML
   end
 
+  before do
+    allow(ActionCable.server).to receive(:broadcast)
+  end
+
   describe "#execute" do
     context "when fetch succeeds with og:image" do
       let(:preview) { create(:open_graph_preview, url: "https://example.com") }
@@ -65,15 +69,46 @@ RSpec.describe ProcessOpenGraphPreview do
 
       before do
         stub_request(:get, "https://example.com").to_raise(SocketError.new("fail"))
+        ActiveJob::Base.queue_adapter = :test
       end
 
-      it "transitions to failed with an error message" do
-        described_class.run(open_graph_preview_id: preview.id)
-        preview.reload
+      context "when retry_count is below MAX_RETRIES" do
+        it "increments retry_count, resets status to pending, and re-enqueues job" do
+          described_class.run(open_graph_preview_id: preview.id)
+          preview.reload
 
-        expect(preview.status).to eq("failed")
-        expect(preview.error_message).to include("HTTP request failed")
-        expect(preview.og_data).to be_nil
+          expect(preview.status).to eq("pending")
+          expect(preview.retry_count).to eq(1)
+          expect(ProcessOpenGraphPreviewJob).to have_been_enqueued
+        end
+
+        it "broadcasts a retrying notification" do
+          described_class.run(open_graph_preview_id: preview.id)
+
+          expect(ActionCable.server).to have_received(:broadcast).with(
+            "open_graph_previews",
+            hash_including(type: "notification", notification_type: "warning")
+          )
+        end
+      end
+
+      context "when retry_count has reached MAX_RETRIES" do
+        let(:preview) { create(:open_graph_preview, url: "https://example.com", retry_count: OpenGraphPreview::MAX_RETRIES) }
+
+        it "marks the preview as failed" do
+          described_class.run(open_graph_preview_id: preview.id)
+          preview.reload
+
+          expect(preview.status).to eq("failed")
+          expect(preview.error_message).to include("HTTP request failed")
+          expect(preview.og_data).to be_nil
+        end
+
+        it "does not re-enqueue the job" do
+          described_class.run(open_graph_preview_id: preview.id)
+
+          expect(ProcessOpenGraphPreviewJob).not_to have_been_enqueued
+        end
       end
     end
 
