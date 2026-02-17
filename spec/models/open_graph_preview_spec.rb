@@ -45,7 +45,7 @@ RSpec.describe OpenGraphPreview do
         old = create(:open_graph_preview, created_at: 2.days.ago)
         new_preview = create(:open_graph_preview, created_at: 1.hour.ago)
 
-        expect(described_class.ordered.to_a).to eq([new_preview, old])
+        expect(described_class.ordered.to_a).to eq([ new_preview, old ])
       end
     end
   end

@@ -31,7 +31,7 @@ class FetchOpenGraphData < ApplicationInteraction
     doc = Nokogiri::HTML(html)
     og_tags = {}
 
-    doc.css('meta[property]').each do |meta|
+    doc.css("meta[property]").each do |meta|
       property = meta["property"].to_s
       content = meta["content"].to_s
 
