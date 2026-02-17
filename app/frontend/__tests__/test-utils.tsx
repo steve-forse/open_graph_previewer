@@ -1,9 +1,10 @@
 import { render, type RenderOptions } from "@testing-library/react";
 import { MantineProvider } from "@mantine/core";
 import type { ReactNode } from "react";
+import { theme } from "../theme";
 
 function Wrapper({ children }: { children: ReactNode }) {
-  return <MantineProvider>{children}</MantineProvider>;
+  return <MantineProvider theme={theme} defaultColorScheme="dark">{children}</MantineProvider>;
 }
 
 function renderWithMantine(ui: ReactNode, options?: RenderOptions) {

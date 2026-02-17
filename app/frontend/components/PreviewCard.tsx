@@ -12,6 +12,7 @@ import {
   Popover,
   Button,
 } from "@mantine/core";
+import { IconCode, IconTrash } from "@tabler/icons-react";
 import type { OpenGraphPreview } from "../types";
 import { OgDataDebugDrawer } from "./OgDataDebugDrawer";
 
@@ -37,7 +38,13 @@ export function PreviewCard({ preview, onDelete }: PreviewCardProps) {
 
   return (
     <>
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
+      <Card
+        shadow="sm"
+        padding="lg"
+        radius="md"
+        withBorder
+        style={{ borderLeft: "3px solid var(--mantine-color-violet-4)" }}
+      >
         <Stack gap="sm">
           <Group justify="space-between">
             <Group gap="xs">
@@ -54,11 +61,12 @@ export function PreviewCard({ preview, onDelete }: PreviewCardProps) {
               {preview.og_data && (
                 <ActionIcon
                   variant="subtle"
+                  color="violet"
                   size="sm"
                   onClick={() => setDrawerOpened(true)}
                   title="Debug OG data"
                 >
-                  🔍
+                  <IconCode size={16} />
                 </ActionIcon>
               )}
               <Popover
@@ -75,7 +83,7 @@ export function PreviewCard({ preview, onDelete }: PreviewCardProps) {
                     onClick={() => setDeletePopoverOpened(true)}
                     title="Delete preview"
                   >
-                    🗑
+                    <IconTrash size={16} />
                   </ActionIcon>
                 </Popover.Target>
                 <Popover.Dropdown>

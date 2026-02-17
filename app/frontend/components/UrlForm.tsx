@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { TextInput, Button, Group } from "@mantine/core";
+import { TextInput, Button, Group, Paper } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import { IconLink, IconSearch } from "@tabler/icons-react";
 import { useSubmitUrl } from "../hooks/useSubmitUrl";
 
 interface UrlFormProps {
@@ -36,20 +37,23 @@ export function UrlForm({ onSuccess }: UrlFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Group align="flex-end">
-        <TextInput
-          label="Enter a URL"
-          placeholder="https://example.com"
-          value={url}
-          onChange={(e) => setUrl(e.currentTarget.value)}
-          style={{ flex: 1 }}
-          disabled={submitting}
-        />
-        <Button type="submit" loading={submitting}>
-          Fetch Preview
-        </Button>
-      </Group>
-    </form>
+    <Paper shadow="xs" p="md" radius="md" withBorder>
+      <form onSubmit={handleSubmit}>
+        <Group align="flex-end">
+          <TextInput
+            label="Enter a URL"
+            placeholder="https://example.com"
+            value={url}
+            onChange={(e) => setUrl(e.currentTarget.value)}
+            style={{ flex: 1 }}
+            disabled={submitting}
+            leftSection={<IconLink size={16} />}
+          />
+          <Button type="submit" loading={submitting} leftSection={<IconSearch size={16} />}>
+            Fetch Preview
+          </Button>
+        </Group>
+      </form>
+    </Paper>
   );
 }

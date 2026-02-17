@@ -1,4 +1,5 @@
-import { Drawer, Code, Title } from "@mantine/core";
+import { Drawer, Code, Title, Group } from "@mantine/core";
+import { IconCode } from "@tabler/icons-react";
 
 interface OgDataDebugDrawerProps {
   opened: boolean;
@@ -17,7 +18,12 @@ export function OgDataDebugDrawer({
     <Drawer
       opened={opened}
       onClose={onClose}
-      title={<Title order={4}>OG Data Debug</Title>}
+      title={
+        <Group gap="xs">
+          <IconCode size={20} />
+          <Title order={4}>OG Data Debug</Title>
+        </Group>
+      }
       position="right"
       size="md"
       padding="md"
