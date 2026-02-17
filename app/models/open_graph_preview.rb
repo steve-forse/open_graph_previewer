@@ -1,4 +1,6 @@
 class OpenGraphPreview < ApplicationRecord
+  MAX_RETRIES = 3
+
   enum :status, {
     pending: "pending",
     processing: "processing",
@@ -12,4 +14,8 @@ class OpenGraphPreview < ApplicationRecord
   }
 
   scope :ordered, -> { order(created_at: :desc) }
+
+  def retrying?
+    pending? && retry_count > 0
+  end
 end
