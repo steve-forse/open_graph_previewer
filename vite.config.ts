@@ -5,6 +5,10 @@ import ViteRuby from "vite-plugin-ruby";
 export default defineConfig({
   plugins: [react(), ViteRuby()],
   server: {
-    hmr: true,
+    hmr: {
+      host: "localhost",
+      port: 3036,
+      protocol: "ws",
+    },
   },
 });
