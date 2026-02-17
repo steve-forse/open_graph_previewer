@@ -28,12 +28,14 @@ Controllers → Jobs → Interactions (service objects) → Models
 ## Tech Stack
 
 ### Backend
+
 - Ruby on Rails 8.1 with SQLite
 - solid_queue for background jobs
 - ActiveInteraction for service objects
 - Nokogiri + HTTParty for HTML fetching/parsing
 
 ### Frontend
+
 - Vite + vite-ruby with HMR
 - React 18 with TypeScript
 - Mantine UI component library (dark theme)
@@ -63,7 +65,7 @@ bin/dev
 # foreman start -f Procfile.dev
 ```
 
-The app will be available at http://localhost:3000
+The app will be available at <http://localhost:3000>
 
 ## Running Tests
 
@@ -101,4 +103,3 @@ bundle exec rubocop
 - **No pagination**: All previews are loaded at once; would need pagination at scale
 - **Single-threaded SQLite**: Not suitable for high-concurrency production deployments
 - **No CDN/proxy for og:images**: Images are loaded directly from source URLs
-- **No retry mechanism**: Failed fetches are not automatically retried
