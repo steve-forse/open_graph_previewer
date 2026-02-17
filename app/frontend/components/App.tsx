@@ -7,7 +7,7 @@ import { UrlForm } from "./UrlForm";
 import { PreviewList } from "./PreviewList";
 
 export function App() {
-  const { previews, loading, addOptimistic } = useOpenGraphPreviews();
+  const { previews, loading, addOptimistic, deletePreview } = useOpenGraphPreviews();
 
   return (
     <MantineProvider>
@@ -16,7 +16,7 @@ export function App() {
         <Stack gap="lg">
           <Title order={1}>Open Graph Previewer</Title>
           <UrlForm onPreviewCreated={addOptimistic} />
-          <PreviewList previews={previews} loading={loading} />
+          <PreviewList previews={previews} loading={loading} onDelete={deletePreview} />
         </Stack>
       </Container>
     </MantineProvider>

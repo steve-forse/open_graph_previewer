@@ -1,8 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { screen } from "@testing-library/react";
 import { render } from "../test-utils";
 import { PreviewList } from "../../components/PreviewList";
 import type { OpenGraphPreview } from "../../types";
+
+const noop = vi.fn();
 
 const makePreviews = (count: number): OpenGraphPreview[] =>
   Array.from({ length: count }, (_, i) => ({
@@ -12,30 +14,31 @@ const makePreviews = (count: number): OpenGraphPreview[] =>
     og_image_url: null,
     og_data: null,
     error_message: null,
+    retry_count: 0,
     created_at: new Date().toISOString(),
   }));
 
 describe("PreviewList", () => {
   it("shows a loader while loading", () => {
-    const { container } = render(<PreviewList previews={[]} loading={true} />);
+    const { container } = render(<PreviewList previews={[]} loading={true} onDelete={noop} />);
     expect(container.querySelector(".mantine-Loader-root")).toBeInTheDocument();
   });
 
   it("shows empty state message when there are no previews", () => {
-    render(<PreviewList previews={[]} loading={false} />);
+    render(<PreviewList previews={[]} loading={false} onDelete={noop} />);
     expect(screen.getByText(/no previews yet/i)).toBeInTheDocument();
   });
 
   it("renders a card for each preview", () => {
     const previews = makePreviews(3);
-    render(<PreviewList previews={previews} loading={false} />);
+    render(<PreviewList previews={previews} loading={false} onDelete={noop} />);
     expect(screen.getByText("https://example-1.com")).toBeInTheDocument();
     expect(screen.getByText("https://example-2.com")).toBeInTheDocument();
     expect(screen.getByText("https://example-3.com")).toBeInTheDocument();
   });
 
   it("does not show empty state when previews exist", () => {
-    render(<PreviewList previews={makePreviews(1)} loading={false} />);
+    render(<PreviewList previews={makePreviews(1)} loading={false} onDelete={noop} />);
     expect(screen.queryByText(/no previews yet/i)).not.toBeInTheDocument();
   });
 });

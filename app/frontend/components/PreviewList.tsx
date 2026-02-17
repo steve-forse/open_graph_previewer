@@ -5,9 +5,10 @@ import { PreviewCard } from "./PreviewCard";
 interface PreviewListProps {
   previews: OpenGraphPreview[];
   loading: boolean;
+  onDelete: (id: number) => void;
 }
 
-export function PreviewList({ previews, loading }: PreviewListProps) {
+export function PreviewList({ previews, loading, onDelete }: PreviewListProps) {
   if (loading) {
     return (
       <Center py="xl">
@@ -27,7 +28,7 @@ export function PreviewList({ previews, loading }: PreviewListProps) {
   return (
     <Stack gap="md">
       {previews.map((preview) => (
-        <PreviewCard key={preview.id} preview={preview} />
+        <PreviewCard key={preview.id} preview={preview} onDelete={onDelete} />
       ))}
     </Stack>
   );

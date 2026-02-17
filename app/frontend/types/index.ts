@@ -5,5 +5,6 @@ export interface OpenGraphPreview {
   og_image_url: string | null;
   og_data: Record<string, string> | null;
   error_message: string | null;
+  retry_count: number;
   created_at: string;
 }

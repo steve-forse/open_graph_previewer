@@ -9,6 +9,8 @@ import {
   Anchor,
   ActionIcon,
   Stack,
+  Popover,
+  Button,
 } from "@mantine/core";
 import type { OpenGraphPreview } from "../types";
 import { OgDataDebugDrawer } from "./OgDataDebugDrawer";
@@ -22,10 +24,12 @@ const STATUS_COLORS: Record<OpenGraphPreview["status"], string> = {
 
 interface PreviewCardProps {
   preview: OpenGraphPreview;
+  onDelete: (id: number) => void;
 }
 
-export function PreviewCard({ preview }: PreviewCardProps) {
+export function PreviewCard({ preview, onDelete }: PreviewCardProps) {
   const [drawerOpened, setDrawerOpened] = useState(false);
+  const [deletePopoverOpened, setDeletePopoverOpened] = useState(false);
 
   const isPending = preview.status === "pending" || preview.status === "processing";
   const isFailed = preview.status === "failed";
@@ -36,19 +40,70 @@ export function PreviewCard({ preview }: PreviewCardProps) {
       <Card shadow="sm" padding="lg" radius="md" withBorder>
         <Stack gap="sm">
           <Group justify="space-between">
-            <Badge color={STATUS_COLORS[preview.status]} variant="filled">
-              {preview.status}
-            </Badge>
-            {preview.og_data && (
-              <ActionIcon
-                variant="subtle"
-                size="sm"
-                onClick={() => setDrawerOpened(true)}
-                title="Debug OG data"
+            <Group gap="xs">
+              <Badge color={STATUS_COLORS[preview.status]} variant="filled">
+                {preview.status}
+              </Badge>
+              {preview.status === "pending" && preview.retry_count > 0 && (
+                <Text size="xs" c="orange">
+                  Retrying… ({preview.retry_count}/{3})
+                </Text>
+              )}
+            </Group>
+            <Group gap="xs">
+              {preview.og_data && (
+                <ActionIcon
+                  variant="subtle"
+                  size="sm"
+                  onClick={() => setDrawerOpened(true)}
+                  title="Debug OG data"
+                >
+                  🔍
+                </ActionIcon>
+              )}
+              <Popover
+                opened={deletePopoverOpened}
+                onChange={setDeletePopoverOpened}
+                position="bottom-end"
+                withArrow
               >
-                🔍
-              </ActionIcon>
-            )}
+                <Popover.Target>
+                  <ActionIcon
+                    variant="subtle"
+                    color="red"
+                    size="sm"
+                    onClick={() => setDeletePopoverOpened(true)}
+                    title="Delete preview"
+                  >
+                    🗑
+                  </ActionIcon>
+                </Popover.Target>
+                <Popover.Dropdown>
+                  <Stack gap="xs">
+                    <Text size="sm">Delete this preview?</Text>
+                    <Group gap="xs">
+                      <Button
+                        size="xs"
+                        color="red"
+                        onClick={() => {
+                          setDeletePopoverOpened(false);
+                          onDelete(preview.id);
+                        }}
+                      >
+                        Confirm
+                      </Button>
+                      <Button
+                        size="xs"
+                        variant="subtle"
+                        onClick={() => setDeletePopoverOpened(false)}
+                      >
+                        Cancel
+                      </Button>
+                    </Group>
+                  </Stack>
+                </Popover.Dropdown>
+              </Popover>
+            </Group>
           </Group>
 
           <Anchor href={preview.url} target="_blank" rel="noopener noreferrer" lineClamp={1}>
