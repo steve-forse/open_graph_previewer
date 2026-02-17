@@ -32,6 +32,13 @@ RSpec.describe OpenGraphPreview do
     end
   end
 
+  describe "retry_count" do
+    it "defaults to 0" do
+      preview = create(:open_graph_preview)
+      expect(preview.retry_count).to eq(0)
+    end
+  end
+
   describe "scopes" do
     describe ".ordered" do
       it "returns records ordered by created_at descending" do
