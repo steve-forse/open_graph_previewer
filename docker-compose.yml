@@ -1,0 +1,42 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: bash -c "bundle install && npm install && bin/rails db:prepare && bin/rails server -p 3000 -b 0.0.0.0"
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/rails
+      - bundle_cache:/usr/local/bundle
+      - node_modules:/rails/node_modules
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: bash -c "bundle install && bin/rails solid_queue:start"
+    volumes:
+      - .:/rails
+      - bundle_cache:/usr/local/bundle
+      - node_modules:/rails/node_modules
+    depends_on:
+      - web
+
+  vite:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: bash -c "npm install && bin/vite dev"
+    ports:
+      - "3036:3036"
+    volumes:
+      - .:/rails
+      - bundle_cache:/usr/local/bundle
+      - node_modules:/rails/node_modules
+    depends_on:
+      - web
+
+volumes:
+  bundle_cache:
+  node_modules:

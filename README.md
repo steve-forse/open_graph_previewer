@@ -67,6 +67,14 @@ bin/dev
 
 The app will be available at <http://localhost:3000>
 
+### Docker
+
+```bash
+docker compose up --build
+```
+
+The app will be available at <http://localhost:3000>. All three services (web, worker, vite) start automatically with live code reloading.
+
 ## Running Tests
 
 ```bash
