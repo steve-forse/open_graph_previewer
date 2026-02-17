@@ -10,15 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_17_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_17_000002) do
   create_table "open_graph_previews", force: :cascade do |t|
-    t.string "url", null: false
-    t.string "status", default: "pending", null: false
-    t.string "og_image_url"
-    t.json "og_data"
-    t.string "error_message"
     t.datetime "created_at", null: false
+    t.string "error_message"
+    t.json "og_data"
+    t.string "og_image_url"
+    t.integer "retry_count", default: 0, null: false
+    t.string "status", default: "pending", null: false
     t.datetime "updated_at", null: false
+    t.string "url", null: false
     t.index ["created_at"], name: "index_open_graph_previews_on_created_at", order: :desc
     t.index ["status"], name: "index_open_graph_previews_on_status"
   end
