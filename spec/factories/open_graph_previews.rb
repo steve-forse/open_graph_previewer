@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :open_graph_preview do
     url { Faker::Internet.url(scheme: "https") }
     status { "pending" }
+    retry_count { 0 }
 
     trait :processing do
       status { "processing" }
