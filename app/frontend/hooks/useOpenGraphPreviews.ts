@@ -29,10 +29,6 @@ export function useOpenGraphPreviews() {
     }
   }, []);
 
-  const addOptimistic = useCallback((preview: OpenGraphPreview) => {
-    setPreviews((prev) => [preview, ...prev]);
-  }, []);
-
   const deletePreview = useCallback(async (id: number) => {
     await axios.delete(`/api/v1/open_graph_previews/${id}`);
   }, []);
@@ -72,5 +68,5 @@ export function useOpenGraphPreviews() {
     };
   }, [fetchPreviews]);
 
-  return { previews, loading, error, addOptimistic, deletePreview, refetch: fetchPreviews };
+  return { previews, loading, error, deletePreview, refetch: fetchPreviews };
 }

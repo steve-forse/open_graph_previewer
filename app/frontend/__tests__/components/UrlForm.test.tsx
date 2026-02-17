@@ -16,6 +16,7 @@ const mockPreview: OpenGraphPreview = {
   og_image_url: null,
   og_data: null,
   error_message: null,
+  retry_count: 0,
   created_at: "2026-01-01T00:00:00.000Z",
 };
 
@@ -29,20 +30,20 @@ describe("UrlForm", () => {
   });
 
   it("renders the URL input and submit button", () => {
-    render(<UrlForm onPreviewCreated={vi.fn()} />);
+    render(<UrlForm />);
     expect(screen.getByPlaceholderText("https://example.com")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /fetch preview/i })).toBeInTheDocument();
   });
 
-  it("calls onPreviewCreated and clears input on successful submit", async () => {
-    const onPreviewCreated = vi.fn();
-    render(<UrlForm onPreviewCreated={onPreviewCreated} />);
+  it("calls onSuccess and clears input on successful submit", async () => {
+    const onSuccess = vi.fn();
+    render(<UrlForm onSuccess={onSuccess} />);
 
     await userEvent.type(screen.getByPlaceholderText("https://example.com"), "https://example.com");
     await userEvent.click(screen.getByRole("button", { name: /fetch preview/i }));
 
     await waitFor(() => {
-      expect(onPreviewCreated).toHaveBeenCalledWith(mockPreview);
+      expect(onSuccess).toHaveBeenCalled();
     });
     expect(screen.getByPlaceholderText("https://example.com")).toHaveValue("");
   });
@@ -51,7 +52,7 @@ describe("UrlForm", () => {
     const submitUrl = vi.fn().mockResolvedValue(null);
     vi.mocked(useSubmitUrl).mockReturnValue({ submitUrl, submitting: false, error: null });
 
-    render(<UrlForm onPreviewCreated={vi.fn()} />);
+    render(<UrlForm />);
     await userEvent.click(screen.getByRole("button", { name: /fetch preview/i }));
 
     expect(submitUrl).not.toHaveBeenCalled();
@@ -64,7 +65,7 @@ describe("UrlForm", () => {
       error: null,
     });
 
-    render(<UrlForm onPreviewCreated={vi.fn()} />);
+    render(<UrlForm />);
     expect(screen.getByPlaceholderText("https://example.com")).toBeDisabled();
   });
 });

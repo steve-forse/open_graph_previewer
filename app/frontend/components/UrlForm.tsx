@@ -2,13 +2,12 @@ import { useState } from "react";
 import { TextInput, Button, Group } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useSubmitUrl } from "../hooks/useSubmitUrl";
-import type { OpenGraphPreview } from "../types";
 
 interface UrlFormProps {
-  onPreviewCreated: (preview: OpenGraphPreview) => void;
+  onSuccess?: () => void;
 }
 
-export function UrlForm({ onPreviewCreated }: UrlFormProps) {
+export function UrlForm({ onSuccess }: UrlFormProps) {
   const [url, setUrl] = useState("");
   const { submitUrl, submitting } = useSubmitUrl();
 
@@ -20,7 +19,7 @@ export function UrlForm({ onPreviewCreated }: UrlFormProps) {
     const result = await submitUrl(url.trim());
 
     if (result) {
-      onPreviewCreated(result);
+      onSuccess?.();
       setUrl("");
       notifications.show({
         title: "URL submitted",

@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, act, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { renderHook, act } from "@testing-library/react";
 import axios from "axios";
 import { useOpenGraphPreviews } from "../../hooks/useOpenGraphPreviews";
 import type { OpenGraphPreview } from "../../types";
@@ -71,20 +71,6 @@ describe("useOpenGraphPreviews", () => {
 
     expect(result.current.error).toBe("Failed to fetch previews");
     expect(result.current.loading).toBe(false);
-  });
-
-  it("addOptimistic prepends a preview to the list", async () => {
-    vi.mocked(axios.get).mockResolvedValue({ data: [makePreview(1)] });
-
-    const { result } = renderHook(() => useOpenGraphPreviews());
-    await act(async () => { await Promise.resolve(); });
-
-    act(() => {
-      result.current.addOptimistic(makePreview(99));
-    });
-
-    expect(result.current.previews[0].id).toBe(99);
-    expect(result.current.previews).toHaveLength(2);
   });
 
   it("disconnects the ActionCable consumer on unmount", async () => {

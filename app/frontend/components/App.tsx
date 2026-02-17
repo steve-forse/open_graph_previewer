@@ -7,7 +7,7 @@ import { UrlForm } from "./UrlForm";
 import { PreviewList } from "./PreviewList";
 
 export function App() {
-  const { previews, loading, addOptimistic, deletePreview } = useOpenGraphPreviews();
+  const { previews, loading, deletePreview } = useOpenGraphPreviews();
 
   return (
     <MantineProvider>
@@ -15,7 +15,7 @@ export function App() {
       <Container size="md" py="xl">
         <Stack gap="lg">
           <Title order={1}>Open Graph Previewer</Title>
-          <UrlForm onPreviewCreated={addOptimistic} />
+          <UrlForm />
           <PreviewList previews={previews} loading={loading} onDelete={deletePreview} />
         </Stack>
       </Container>
