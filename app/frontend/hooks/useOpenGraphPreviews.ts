@@ -22,7 +22,7 @@ export function useOpenGraphPreviews() {
       );
       setPreviews(response.data);
       setError(null);
-    } catch (err) {
+    } catch {
       setError("Failed to fetch previews");
     } finally {
       setLoading(false);

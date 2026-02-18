@@ -115,7 +115,7 @@ describe("useOpenGraphPreviews", () => {
     vi.mocked(axios.get).mockResolvedValue({ data: [] });
     const { notifications } = await import("@mantine/notifications");
 
-    const { result: _result } = renderHook(() => useOpenGraphPreviews());
+    renderHook(() => useOpenGraphPreviews());
     await act(async () => { await Promise.resolve(); });
 
     act(() => {
